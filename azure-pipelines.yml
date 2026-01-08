@@ -4,7 +4,15 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+ branches:
+  include: 
+   - main
+
+parameters:
+- name: skipTests
+  displayName: Skip Unit Tests?
+  type: boolean
+  default: false
 
 pool:
   name: MyPool
@@ -13,6 +21,7 @@ steps:
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
+    options: ${{ parameters.skipTests == true && '-DskipTests' || '' }}
     mavenOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: 'default'
@@ -27,3 +36,11 @@ steps:
     echo Starting the application
     java -cp target/my-app-1.0-SNAPSHOT.jar com.mycompany.app.App
   displayName: 'Run a multi-line script'
+
+# 4. Upload the JAR to Azure (The new part!)
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'target/my-app-1.0-SNAPSHOT.jar'
+    ArtifactName: 'MyJavaApp'
+    publishLocation: 'Container'
+  displayName: 'Upload JAR to Azure'
