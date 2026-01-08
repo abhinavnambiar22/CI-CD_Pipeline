@@ -16,7 +16,7 @@ pool:
   name: MyPool
 
 steps:
-- task: Maven@3
+- task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
     ${{ if eq(parameters.skipTests, true) }}:
