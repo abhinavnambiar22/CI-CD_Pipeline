@@ -19,7 +19,8 @@ steps:
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
-    options: ${{ parameters.skipTests == true && '-DskipTests' || '' }}
+    ${{ if eq(parameters.skipTests, true) }}:
+      options: '-DskipTests'
     mavenOptions: '-Xmx3072m'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: 'default'
